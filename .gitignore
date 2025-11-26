@@ -1,0 +1,154 @@
+# 通用忽略文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE和编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.nano/
+.emacs.d/
+
+# 日志文件
+*.log
+logs/
+log/
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+*.temp
+
+# 环境变量文件
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 依赖目录
+node_modules/
+vendor/
+
+# 编译输出
+build/
+dist/
+target/
+out/
+
+# Go编译输出
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+go.work.sum
+
+# Hardhat文件
+cache/
+artifacts/
+typechain-types/
+
+# 部署文件
+deployment-*.json
+deployments/
+
+# 数据库文件
+*.db
+*.sqlite
+*.sqlite3
+
+# 配置文件（保护敏感信息）
+constant.env
+*.pem
+*.key
+*.p12
+*.crt
+*.pfx
+
+# 系统文件
+*.pid
+*.seed
+*.pid.lock
+
+# 备份文件
+*.bak
+*.backup
+*.old
+
+# 缓存文件
+.cache/
+*.cache
+
+# 压缩文件
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# 操作系统文件
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Linux
+*~
+.nfs*
+
+# 测试覆盖率
+coverage.out
+coverage.html
+*.cover
+
+# 文档生成
+docs/generated/
+
+# 证书文件
+*.pem
+*.key
+*.crt
+*.csr
+
+# Docker
+.dockerignore
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Kubernetes
+*.kubeconfig
+
+# 监控和性能分析
+*.prof
+*.pprof
+*.cpu
+*.mem
+
+# 报告文件
+*.pdf
+*.docx
+*.xlsx
+
+# 可执行文件（除特定项目文件）
+!token-balance-server

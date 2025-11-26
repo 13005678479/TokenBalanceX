@@ -1,0 +1,67 @@
+# 合约端项目特定忽略文件
+
+# Hardhat和Node.js
+node_modules/
+cache/
+artifacts/
+typechain-types/
+
+# 环境变量
+.env
+.env.local
+constant.env
+
+# 部署文件
+deployment-*.json
+
+# 编译输出
+dist/
+build/
+
+# 测试覆盖率
+coverage/
+coverage.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
+
+# 临时文件
+*.tmp
+temp/
+
+# 配置文件（保护私钥）
+*.pem
+*.key
+*.json.backup
+
+# 文档生成
+docs/
+
+# 本地配置
+hardhat.config.local.js
+truffle-config.local.js
+
+# Gas使用报告
+gas-report.txt
+
+# 调试文件
+debug/
+*.debug
+
+# 安全扫描报告
+security-report.*
+audit-report.*
+
+# 备份文件
+*.bak
+*.backup
