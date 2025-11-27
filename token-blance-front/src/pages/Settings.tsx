@@ -43,7 +43,20 @@ const SettingsSection: React.FC<SettingsSectionProps> = ({ title, description, c
 };
 
 const Settings: React.FC = () => {
-  const { address, chainId, switchToNetwork, disconnectWallet, isConnected } = useWeb3();
+  const [mounted, setMounted] = useState(false);
+  const { address, chainId, switchNetwork, disconnectWallet, isConnected } = useWeb3();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
   
   // 主题设置
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('system');
@@ -63,14 +76,14 @@ const Settings: React.FC = () => {
 
   // 初始化设置
   useEffect(() => {
-    const savedTheme = storage.get('theme') || 'system';
-    const savedNotifications = storage.get('notifications') || {
+    const savedTheme = storage.get<'light' | 'dark' | 'system'>('theme') || 'system';
+    const savedNotifications = storage.get<{ transactions: boolean; points: boolean; system: boolean }>('notifications') || {
       transactions: true,
       points: true,
       system: true
     };
-    const savedNetwork = storage.get('selected_network') || 'localhost';
-    const savedApiUrl = storage.get('api_url') || 'http://localhost:8080';
+    const savedNetwork = storage.get<string>('selected_network') || 'localhost';
+    const savedApiUrl = storage.get<string>('api_url') || 'http://localhost:8080';
     
     setTheme(savedTheme);
     setNotifications(savedNotifications);
@@ -111,7 +124,7 @@ const Settings: React.FC = () => {
     
     // 如果连接了钱包，切换网络
     if (isConnected && NETWORKS[network]) {
-      switchToNetwork(NETWORKS[network].chainId);
+      switchNetwork(NETWORKS[network].chainId);
     }
   };
 
@@ -170,7 +183,10 @@ const Settings: React.FC = () => {
                 Current Network
               </label>
               <div className="bg-blue-50 text-blue-800 p-3 rounded border border-blue-200">
-                {NETWORKS[Object.keys(NETWORKS).find(key => NETWORKS[key].chainId === chainId)]?.name || 'Unknown Network'}
+                {(() => {
+                  const networkKey = Object.keys(NETWORKS).find(key => NETWORKS[key].chainId === chainId);
+                  return networkKey ? NETWORKS[networkKey].name : 'Unknown Network';
+                })()}
               </div>
             </div>
           </div>

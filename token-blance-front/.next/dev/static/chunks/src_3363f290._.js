@@ -147,8 +147,8 @@ const getExplorerAddressUrl = (address, network)=>{
     if (!networkConfig || !networkConfig.explorerUrl) return '#';
     return `${networkConfig.explorerUrl}/address/${address}`;
 };
-const createContractInstance = (address, provider)=>{
-    return new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].Contract(address, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TOKEN_CONTRACT_ABI"], provider);
+const createContractInstance = (address, providerOrSigner)=>{
+    return new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$ethers$2f$lib$2e$esm$2f$ethers$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__ethers$3e$__["ethers"].Contract(address, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TOKEN_CONTRACT_ABI"], providerOrSigner);
 };
 const getTokenBalance = async (contractAddress, userAddress, provider)=>{
     try {

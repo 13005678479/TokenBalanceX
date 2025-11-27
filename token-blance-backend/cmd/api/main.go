@@ -2,6 +2,7 @@ package main
 
 import (
 	"token-balance/config"
+	_ "token-balance/docs" // 导入生成的docs包，用于Swagger文档
 	"token-balance/internal/controllers"
 	"token-balance/internal/middleware"
 	"token-balance/internal/router"

@@ -130,7 +130,11 @@
 }
 
 .button-group button {
-  @apply relative inline-flex items-center px-3 py-2 text-sm font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 first:rounded-l-md last:rounded-r-md not-first:border-l-0;
+  @apply relative inline-flex items-center px-3 py-2 text-sm font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 first:rounded-l-md last:rounded-r-md;
+}
+
+.button-group button:not(:first-child) {
+  @apply border-l-0;
 }
 
 /* 状态徽章 */

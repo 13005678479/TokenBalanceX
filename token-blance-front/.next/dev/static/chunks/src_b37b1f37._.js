@@ -6781,7 +6781,7 @@ const Statistics = ()=>{
                                         cx: "50%",
                                         cy: "50%",
                                         labelLine: false,
-                                        label: ({ name, percent })=>`${name} ${(percent * 100).toFixed(0)}%`,
+                                        label: ({ name, percent })=>`${name} ${((percent || 0) * 100).toFixed(0)}%`,
                                         outerRadius: 80,
                                         fill: "#8884d8",
                                         dataKey: "value",
@@ -7053,7 +7053,7 @@ const SettingsSection = ({ title, description, children })=>{
 _c = SettingsSection;
 const Settings = ()=>{
     _s();
-    const { address, chainId, switchToNetwork, disconnectWallet, isConnected } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$Web3Context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useWeb3"])();
+    const { address, chainId, switchNetwork, disconnectWallet, isConnected } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$Web3Context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useWeb3"])();
     // 主题设置
     const [theme, setTheme] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('system');
     // 通知设置
@@ -7115,7 +7115,7 @@ const Settings = ()=>{
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$format$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["storage"].set('selected_network', network);
         // 如果连接了钱包，切换网络
         if (isConnected && __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NETWORKS"][network]) {
-            switchToNetwork(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NETWORKS"][network].chainId);
+            switchNetwork(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NETWORKS"][network].chainId);
         }
     };
     const saveApiUrl = (url)=>{
@@ -7232,7 +7232,10 @@ const Settings = ()=>{
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "bg-blue-50 text-blue-800 p-3 rounded border border-blue-200",
-                                            children: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NETWORKS"][Object.keys(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NETWORKS"]).find((key)=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NETWORKS"][key].chainId === chainId)]?.name || 'Unknown Network'
+                                            children: (()=>{
+                                                const networkKey = Object.keys(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NETWORKS"]).find((key)=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NETWORKS"][key].chainId === chainId);
+                                                return networkKey ? __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$constants$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["NETWORKS"][networkKey].name : 'Unknown Network';
+                                            })()
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/Settings.tsx",
                                             lineNumber: 172,
@@ -7258,12 +7261,12 @@ const Settings = ()=>{
                                 children: "Disconnect Wallet"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/Settings.tsx",
-                                lineNumber: 179,
+                                lineNumber: 182,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/pages/Settings.tsx",
-                            lineNumber: 178,
+                            lineNumber: 181,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
@@ -7289,7 +7292,7 @@ const Settings = ()=>{
                                 children: "Theme"
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/Settings.tsx",
-                                lineNumber: 193,
+                                lineNumber: 196,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7302,7 +7305,7 @@ const Settings = ()=>{
                                             size: 16
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/Settings.tsx",
-                                            lineNumber: 198,
+                                            lineNumber: 201,
                                             columnNumber: 57
                                         }, ("TURBOPACK compile-time value", void 0))
                                     },
@@ -7313,7 +7316,7 @@ const Settings = ()=>{
                                             size: 16
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/Settings.tsx",
-                                            lineNumber: 199,
+                                            lineNumber: 202,
                                             columnNumber: 55
                                         }, ("TURBOPACK compile-time value", void 0))
                                     },
@@ -7324,7 +7327,7 @@ const Settings = ()=>{
                                             size: 16
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/Settings.tsx",
-                                            lineNumber: 200,
+                                            lineNumber: 203,
                                             columnNumber: 59
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }
@@ -7337,34 +7340,34 @@ const Settings = ()=>{
                                                 children: option.label
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/Settings.tsx",
-                                                lineNumber: 212,
+                                                lineNumber: 215,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, option.value, true, {
                                         fileName: "[project]/src/pages/Settings.tsx",
-                                        lineNumber: 202,
+                                        lineNumber: 205,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)))
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/Settings.tsx",
-                                lineNumber: 196,
+                                lineNumber: 199,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/pages/Settings.tsx",
-                        lineNumber: 192,
+                        lineNumber: 195,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/pages/Settings.tsx",
-                    lineNumber: 191,
+                    lineNumber: 194,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/pages/Settings.tsx",
-                lineNumber: 187,
+                lineNumber: 190,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SettingsSection, {
@@ -7398,7 +7401,7 @@ const Settings = ()=>{
                                             children: item.label
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/Settings.tsx",
-                                            lineNumber: 233,
+                                            lineNumber: 236,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7406,13 +7409,13 @@ const Settings = ()=>{
                                             children: item.description
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/Settings.tsx",
-                                            lineNumber: 234,
+                                            lineNumber: 237,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 232,
+                                    lineNumber: 235,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -7425,36 +7428,36 @@ const Settings = ()=>{
                                             className: "sr-only peer"
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/Settings.tsx",
-                                            lineNumber: 237,
+                                            lineNumber: 240,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/Settings.tsx",
-                                            lineNumber: 243,
+                                            lineNumber: 246,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 236,
+                                    lineNumber: 239,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, item.key, true, {
                             fileName: "[project]/src/pages/Settings.tsx",
-                            lineNumber: 231,
+                            lineNumber: 234,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)))
                 }, void 0, false, {
                     fileName: "[project]/src/pages/Settings.tsx",
-                    lineNumber: 225,
+                    lineNumber: 228,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/pages/Settings.tsx",
-                lineNumber: 221,
+                lineNumber: 224,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SettingsSection, {
@@ -7470,7 +7473,7 @@ const Settings = ()=>{
                                     children: "Default Network"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 257,
+                                    lineNumber: 260,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -7487,18 +7490,18 @@ const Settings = ()=>{
                                             ]
                                         }, key, true, {
                                             fileName: "[project]/src/pages/Settings.tsx",
-                                            lineNumber: 266,
+                                            lineNumber: 269,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)))
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 260,
+                                    lineNumber: 263,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/Settings.tsx",
-                            lineNumber: 256,
+                            lineNumber: 259,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7508,38 +7511,38 @@ const Settings = ()=>{
                                     children: "• Localhost: Hardhat development network"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 274,
+                                    lineNumber: 277,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     children: "• Sepolia: Ethereum testnet"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 275,
+                                    lineNumber: 278,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     children: "• Base Sepolia: Base testnet"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 276,
+                                    lineNumber: 279,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/Settings.tsx",
-                            lineNumber: 273,
+                            lineNumber: 276,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/Settings.tsx",
-                    lineNumber: 255,
+                    lineNumber: 258,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/pages/Settings.tsx",
-                lineNumber: 251,
+                lineNumber: 254,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SettingsSection, {
@@ -7555,7 +7558,7 @@ const Settings = ()=>{
                             placeholder: "http://localhost:8080"
                         }, void 0, false, {
                             fileName: "[project]/src/pages/Settings.tsx",
-                            lineNumber: 287,
+                            lineNumber: 290,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7565,7 +7568,7 @@ const Settings = ()=>{
                                     children: "Change the backend API URL to connect to a different server instance."
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 295,
+                                    lineNumber: 298,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7575,24 +7578,24 @@ const Settings = ()=>{
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 296,
+                                    lineNumber: 299,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/Settings.tsx",
-                            lineNumber: 294,
+                            lineNumber: 297,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/Settings.tsx",
-                    lineNumber: 286,
+                    lineNumber: 289,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/pages/Settings.tsx",
-                lineNumber: 282,
+                lineNumber: 285,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SettingsSection, {
@@ -7611,13 +7614,13 @@ const Settings = ()=>{
                                         size: 16
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/Settings.tsx",
-                                        lineNumber: 311,
+                                        lineNumber: 314,
                                         columnNumber: 21
                                     }, void 0),
                                     children: "Clear Cache"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 308,
+                                    lineNumber: 311,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -7627,19 +7630,19 @@ const Settings = ()=>{
                                         size: 16
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/Settings.tsx",
-                                        lineNumber: 319,
+                                        lineNumber: 322,
                                         columnNumber: 21
                                     }, void 0),
                                     children: "Reset Settings"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 316,
+                                    lineNumber: 319,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/Settings.tsx",
-                            lineNumber: 307,
+                            lineNumber: 310,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7649,31 +7652,31 @@ const Settings = ()=>{
                                     children: "• Clear Cache: Remove temporary data and refresh the application"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 326,
+                                    lineNumber: 329,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     children: "• Reset Settings: Restore all settings to their default values"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 327,
+                                    lineNumber: 330,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/Settings.tsx",
-                            lineNumber: 325,
+                            lineNumber: 328,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/Settings.tsx",
-                    lineNumber: 306,
+                    lineNumber: 309,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/pages/Settings.tsx",
-                lineNumber: 302,
+                lineNumber: 305,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SettingsSection, {
@@ -7689,7 +7692,7 @@ const Settings = ()=>{
                                     children: "TokenBalanceX Frontend"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 336,
+                                    lineNumber: 339,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7697,13 +7700,13 @@ const Settings = ()=>{
                                     children: "A modern React + Next.js frontend for the TokenBalanceX blockchain token balance tracking system. Built with TypeScript, Tailwind CSS, and Web3 integration."
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 337,
+                                    lineNumber: 340,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/Settings.tsx",
-                            lineNumber: 335,
+                            lineNumber: 338,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7713,7 +7716,7 @@ const Settings = ()=>{
                                     children: "Version 1.0.0"
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 344,
+                                    lineNumber: 347,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -7725,31 +7728,31 @@ const Settings = ()=>{
                                             className: "mr-1"
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/Settings.tsx",
-                                            lineNumber: 346,
+                                            lineNumber: 349,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         "GitHub"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/pages/Settings.tsx",
-                                    lineNumber: 345,
+                                    lineNumber: 348,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/Settings.tsx",
-                            lineNumber: 343,
+                            lineNumber: 346,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/Settings.tsx",
-                    lineNumber: 334,
+                    lineNumber: 337,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/pages/Settings.tsx",
-                lineNumber: 333,
+                lineNumber: 336,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         ]
@@ -7759,7 +7762,7 @@ const Settings = ()=>{
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
-_s(Settings, "A7sthvnnS4VMVTMVnf75z0dGER8=", false, function() {
+_s(Settings, "pREEM1kCjCcJrvNfxdmXQ5u4ASo=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$Web3Context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useWeb3"]
     ];

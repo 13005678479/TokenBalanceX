@@ -48,7 +48,20 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
 };
 
 const Help: React.FC = () => {
+  const [mounted, setMounted] = React.useState(false);
   const { isConnected } = useWeb3();
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   const faqItems = [
     {

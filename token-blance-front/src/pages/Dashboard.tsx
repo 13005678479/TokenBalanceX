@@ -7,6 +7,7 @@ import { StatsOverview, User } from '@/types';
 import { formatNumber, formatPercentage } from '@/utils/format';
 import { TrendingUp, TrendingDown, Users, Coins, Award, Activity } from 'lucide-react';
 import { useWeb3 } from '@/contexts/Web3Context';
+import Loading from '@/components/ui/Loading';
 
 interface StatCardProps {
   title: string;
@@ -52,7 +53,20 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon, loading
 };
 
 const Dashboard: React.FC = () => {
+  const [mounted, setMounted] = useState(false);
   const { address, isConnected } = useWeb3();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
   const [stats, setStats] = useState<StatsOverview | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

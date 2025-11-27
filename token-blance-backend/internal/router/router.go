@@ -1,6 +1,7 @@
 package router
 
 import (
+	"token-balance/docs"
 	"token-balance/internal/controllers"
 
 	"github.com/gin-gonic/gin"
@@ -35,7 +36,8 @@ func SetupRouter(
 		c.Next()
 	})
 
-	// Swagger文档
+	// 配置Swagger文档
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// 健康检查

@@ -8,6 +8,7 @@ import { formatNumber, calculateGrowthRate } from '@/utils/format';
 import { formatAddress } from '@/utils/web3';
 import { Trophy, Crown, Medal, Award, TrendingUp, TrendingDown } from 'lucide-react';
 import { useWeb3 } from '@/contexts/Web3Context';
+import Loading from '@/components/ui/Loading';
 
 interface LeaderboardRowProps {
   entry: LeaderboardEntry;
@@ -92,7 +93,20 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ entry, index, isCurrent
 };
 
 const Leaderboard: React.FC = () => {
+  const [mounted, setMounted] = useState(false);
   const { address, isConnected } = useWeb3();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

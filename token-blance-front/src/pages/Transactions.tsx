@@ -112,7 +112,20 @@ interface FilterOptions {
 }
 
 const Transactions: React.FC = () => {
+  const [mounted, setMounted] = useState(false);
   const { isConnected, chainId } = useWeb3();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
   const [events, setEvents] = useState<EventLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

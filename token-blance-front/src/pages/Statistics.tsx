@@ -107,7 +107,20 @@ const ChartCard: React.FC<ChartCardProps> = ({ title, children, loading, actions
 };
 
 const Statistics: React.FC = () => {
+  const [mounted, setMounted] = useState(false);
   const { isConnected } = useWeb3();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
   const [stats, setStats] = useState<StatsOverview | null>(null);
   const [dailyStats, setDailyStats] = useState<DailyStats[]>([]);
   const [loading, setLoading] = useState(true);
@@ -359,7 +372,7 @@ const Statistics: React.FC = () => {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"

@@ -44,9 +44,9 @@ export const getExplorerAddressUrl = (address: string, network: string): string 
 // 创建合约实例
 export const createContractInstance = (
   address: string, 
-  provider: ethers.providers.Web3Provider
+  providerOrSigner: ethers.providers.Web3Provider | ethers.providers.JsonRpcSigner
 ): ethers.Contract => {
-  return new ethers.Contract(address, TOKEN_CONTRACT_ABI, provider);
+  return new ethers.Contract(address, TOKEN_CONTRACT_ABI, providerOrSigner);
 };
 
 // 获取代币余额

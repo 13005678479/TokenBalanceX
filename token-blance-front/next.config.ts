@@ -47,6 +47,8 @@ const nextConfig = {
     optimizeCss: true,
     optimizePackageImports: ['lucide-react'],
   },
+
+
 };
 
 module.exports = nextConfig;

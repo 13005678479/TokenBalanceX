@@ -137,7 +137,20 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ transactions, o
 };
 
 const Contract: React.FC = () => {
+  const [mounted, setMounted] = useState(false);
   const { address, isConnected, sendTokenTransaction, getTokenBalance, provider } = useWeb3();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
   const [balance, setBalance] = useState<string>('0');
   const [totalSupply, setTotalSupply] = useState<string>('0');
   const [loading, setLoading] = useState(false);

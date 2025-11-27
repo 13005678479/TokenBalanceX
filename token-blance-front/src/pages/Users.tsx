@@ -24,7 +24,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onViewHistory }) => {
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-600" />
+              <UsersIcon className="w-5 h-5 text-blue-600" />
             </div>
             <div>
               <div className="font-medium text-gray-900">
@@ -185,7 +185,20 @@ const UserHistoryModal: React.FC<UserHistoryModalProps> = ({
 };
 
 const UsersPage: React.FC = () => {
+  const [mounted, setMounted] = useState(false);
   const { isConnected } = useWeb3();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
