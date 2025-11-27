@@ -1,0 +1,380 @@
+basePath: /api/v1
+definitions:
+  models.DailyStats:
+    properties:
+      date:
+        type: string
+      new_users:
+        type: integer
+      points_calculated:
+        type: number
+      transactions:
+        type: integer
+      volume:
+        type: string
+    type: object
+  models.LeaderboardEntry:
+    properties:
+      address:
+        type: string
+      balance:
+        type: string
+      rank:
+        type: integer
+      total_points:
+        type: number
+    type: object
+  models.PaginatedData:
+    properties:
+      items: {}
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  models.PointsRecord:
+    properties:
+      balance:
+        type: string
+      calculate_date:
+        type: string
+      created_at:
+        type: string
+      hours:
+        type: number
+      id:
+        type: integer
+      points:
+        type: number
+      rate:
+        type: number
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 关联
+      user_address:
+        type: string
+    type: object
+  models.SwaggerResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  models.User:
+    properties:
+      address:
+        type: string
+      balance:
+        type: string
+      balance_history:
+        description: 关联
+        items:
+          $ref: '#/definitions/models.UserBalanceHistory'
+        type: array
+      created_at:
+        type: string
+      daily_summaries:
+        items:
+          $ref: '#/definitions/models.UserDailySummary'
+        type: array
+      points_records:
+        items:
+          $ref: '#/definitions/models.PointsRecord'
+        type: array
+      total_points:
+        type: number
+      updated_at:
+        type: string
+    type: object
+  models.UserBalanceHistory:
+    properties:
+      block_number:
+        type: integer
+      change_amount:
+        type: string
+      change_type:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      new_balance:
+        type: string
+      old_balance:
+        type: string
+      timestamp:
+        type: string
+      tx_hash:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 关联
+      user_address:
+        type: string
+    type: object
+  models.UserDailySummary:
+    properties:
+      average_balance:
+        type: string
+      closing_balance:
+        type: string
+      created_at:
+        type: string
+      hours_held:
+        type: number
+      id:
+        type: integer
+      opening_balance:
+        type: string
+      points_earned:
+        type: number
+      summary_date:
+        type: string
+      transfer_in:
+        type: string
+      transfer_out:
+        type: string
+      updated_at:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 关联
+      user_address:
+        type: string
+      volume_burned:
+        type: string
+      volume_minted:
+        type: string
+    type: object
+  services.StatsOverview:
+    properties:
+      active_users_24h:
+        type: integer
+      total_points:
+        type: number
+      total_supply:
+        type: string
+      total_transactions:
+        type: integer
+      total_users:
+        type: integer
+      transactions_24h:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: API Support
+    url: http://www.swagger.io/support
+  description: TokenBalanceX区块链代币余额追踪和积分计算系统API
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: TokenBalanceX API
+  version: "1.0"
+paths:
+  /api/v1/events:
+    get:
+      description: 获取最近的区块链事件记录
+      parameters:
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PaginatedData'
+      summary: 获取最近事件
+      tags:
+      - Events
+  /api/v1/events/sync:
+    post:
+      description: 手动触发区块链事件同步
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SwaggerResponse'
+      summary: 同步区块链事件
+      tags:
+      - Events
+  /api/v1/points/calculate:
+    post:
+      description: 手动触发积分计算任务
+      parameters:
+      - description: 开始日期
+        format: "2024-01-01"
+        in: query
+        name: fromDate
+        type: string
+      - description: 结束日期
+        format: "2024-01-31"
+        in: query
+        name: toDate
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SwaggerResponse'
+      summary: 计算积分
+      tags:
+      - Points
+  /api/v1/points/leaderboard:
+    get:
+      description: 获取积分排行榜，显示积分最高的用户
+      parameters:
+      - default: 50
+        description: 返回数量限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.LeaderboardEntry'
+            type: array
+      summary: 获取积分排行榜
+      tags:
+      - Points
+  /api/v1/stats/daily:
+    get:
+      description: 获取指定天数的每日统计数据
+      parameters:
+      - default: 30
+        description: 天数
+        in: query
+        name: days
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.DailyStats'
+            type: array
+      summary: 获取每日统计
+      tags:
+      - Stats
+  /api/v1/stats/overview:
+    get:
+      description: 获取系统的总体统计数据
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/services.StatsOverview'
+      summary: 获取系统概览
+      tags:
+      - Stats
+  /api/v1/users/{address}:
+    get:
+      description: 根据用户地址获取当前余额和总积分
+      parameters:
+      - description: 用户地址
+        in: path
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: 获取用户余额
+      tags:
+      - User
+  /api/v1/users/{address}/history:
+    get:
+      description: 获取指定用户的余额变动记录
+      parameters:
+      - description: 用户地址
+        in: path
+        name: address
+        required: true
+        type: string
+      - default: 1
+        description: 页码
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: 每页数量
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PaginatedData'
+      summary: 获取用户余额历史
+      tags:
+      - User
+  /api/v1/users/{address}/points:
+    get:
+      description: 获取指定用户的积分记录
+      parameters:
+      - description: 用户地址
+        in: path
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.PointsRecord'
+            type: array
+      summary: 获取用户积分
+      tags:
+      - User
+schemes:
+- http
+- https
+securityDefinitions:
+  ApiKeyAuth:
+    description: Bearer token for authentication
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

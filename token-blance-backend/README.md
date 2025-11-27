@@ -1,251 +1,267 @@
-# TokenBalance 后端服务
+# TokenBalanceX Backend
 
-这是一个基于Gin框架的Go后端服务，用于监听以太坊ERC20代币合约事件，追踪用户余额，并计算积分。
-
-## 功能特性
-
-- ✅ 合约事件监听（mint、burn、transfer）
-- ✅ 用户余额重建和追踪
-- ✅ 积分计算和定时任务
-- ✅ 多链支持（Sepolia、Base Sepolia）
-- ✅ RESTful API接口
-- ✅ 数据库统计和报表
-- ✅ 日志记录和监控
+区块链代币余额追踪和积分计算系统的后端API服务。
 
 ## 技术栈
 
-- **Web框架**: Gin
-- **数据库**: MySQL + GORM
-- **以太坊客户端**: go-ethereum
-- **定时任务**: robfig/cron
-- **数值处理**: shopspring/decimal
-- **配置管理**: dotenv
+- **Go 1.21**
+- **Gin Web Framework**
+- **GORM + MySQL**
+- **Swagger API文档**
+- **JWT认证**
+- **Cron定时任务**
 
 ## 项目结构
 
 ```
-token-blance-backend/
-├── main.go                 # 主入口文件
-├── go.mod                  # Go模块文件
-├── .env                    # 环境变量配置
-├── config/                 # 配置包
-│   └── config.go
-├── database/               # 数据库包
-│   ├── models.go           # 数据模型
-│   └── database.go        # 数据库连接
-├── services/              # 服务层
-│   ├── event_service.go    # 事件监听服务
-│   ├── points_service.go   # 积分计算服务
-│   └── user_service.go    # 用户服务
-├── handlers/              # 处理器层
-│   ├── handler.go         # 基础处理器
-│   ├── user_handler.go    # 用户相关处理器
-│   ├── event_handler.go   # 事件相关处理器
-│   ├── points_handler.go  # 积分相关处理器
-│   └── stats_handler.go  # 统计相关处理器
-├── middleware/            # 中间件
-│   └── middleware.go
-├── logs/                 # 日志目录
-└── README.md            # 项目文档
+cmd/api/                 # 应用入口点
+├── main.go             # 主函数
+└── router.go            # 路由配置
+
+internal/               # 内部代码
+├── controllers/         # 控制器层
+│   ├── user_controller.go      # 用户相关API
+│   ├── event_controller.go     # 事件相关API
+│   ├── points_controller.go    # 积分相关API
+│   └── stats_controller.go     # 统计相关API
+├── services/          # 服务层
+│   ├── user_service.go        # 用户业务逻辑
+│   ├── event_service.go       # 事件处理逻辑
+│   ├── points_service.go     # 积分计算逻辑
+│   └── stats_service.go      # 统计业务逻辑
+├── middleware/         # 中间件
+│   ├── logger.go        # 日志中间件
+│   ├── auth.go          # 认证中间件
+│   └── recovery.go      # 错误恢复中间件
+└── models/           # 数据模型
+    ├── user.go              # 用户模型
+    ├── user_balance_history.go # 余额历史模型
+    ├── points_record.go      # 积分记录模型
+    ├── event_log.go         # 事件日志模型
+    └── system_stats.go      # 系统统计模型
+
+pkg/                   # 可导出的包
+├── config/           # 配置管理
+│   └── config.go       # 配置结构
+├── database/          # 数据库
+│   └── connection.go    # 数据库连接
+└── utils/           # 工具函数
+
+docs/                 # API文档
+└── swagger.json      # Swagger规范
 ```
 
-## 环境配置
+## 快速开始
 
-复制并编辑环境变量文件：
+### 1. 环境准备
 
-```bash
-# 服务器配置
-SERVER_PORT=8080
-GIN_MODE=debug
+确保系统已安装：
+- Go 1.21+
+- MySQL 8.0+
 
-# 数据库配置
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=password
-DB_NAME=token_balance
-DB_CHARSET=utf8mb4
+### 2. 数据库配置
 
-# 以太坊配置
-ETHEREUM_RPC_URL=http://127.0.0.1:8545
-ETHEREUM_CHAIN_ID=31337
-ETHEREUM_CONFIRMATION_BLOCKS=6
-
-# 合约配置
-TOKEN_CONTRACT_ADDRESS=0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
-TOKEN_CONTRACT_DEPLOYMENT_BLOCK=2
-
-# 多链配置
-SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID
-BASE_SEPOLIA_RPC_URL=https://sepolia.base.org
-
-# 积分计算配置
-POINTS_CALCULATION_RATE=0.05
-POINTS_CRON_SCHEDULE=0 * * * *
-
-# 日志配置
-LOG_LEVEL=info
-LOG_FILE=logs/app.log
-```
-
-## 数据库设计
-
-### 核心表结构
-
-1. **users** - 用户信息表
-   - address: 用户地址
-   - balance: 当前余额
-   - total_points: 总积分
-
-2. **user_balance_history** - 用户余额变动记录表
-   - address: 用户地址
-   - amount: 变动数量
-   - balance_before/balance_after: 变动前后余额
-   - event_type: 事件类型（mint/burn/transfer）
-   - tx_hash: 交易哈希
-
-3. **points_records** - 积分记录表
-   - address: 用户地址
-   - points: 积分数量
-   - balance: 计算时余额
-   - duration: 持有时间（秒）
-   - start_time/end_time: 计算时间段
-
-4. **system_stats** - 系统统计表
-   - total_users: 总用户数
-   - active_users: 活跃用户数
-   - total_balance: 总余额
-   - total_points: 总积分
-
-## API 接口
-
-### 健康检查
-- `GET /health` - 服务健康状态
-
-### 用户相关
-- `GET /api/v1/users/:address` - 获取用户余额
-- `GET /api/v1/users/:address/history` - 获取余额变动历史
-- `GET /api/v1/users/:address/points` - 获取用户积分信息
-
-### 事件相关
-- `GET /api/v1/events/` - 获取最近事件列表
-- `POST /api/v1/events/sync` - 手动同步事件
-
-### 积分相关
-- `GET /api/v1/points/leaderboard` - 获取积分排行榜
-- `POST /api/v1/points/calculate` - 手动计算积分
-
-### 统计相关
-- `GET /api/v1/stats/overview` - 获取系统概览
-- `GET /api/v1/stats/daily` - 获取每日统计
-
-## 积分计算逻辑
-
-积分计算基于用户的代币余额和持有时间：
-
-```
-积分 = 余额 × 积分费率 × 持有时间（小时）
-```
-
-### 示例场景
-- 用户15:00有0个token
-- 15:10有100个token  
-- 15:30有200个token
-- 16:00计算积分：
-
-```
-积分 = 100 × 0.05 × 20/60 + 200 × 0.05 × 30/60 = 1.6667 + 5 = 6.6667
-```
-
-## 安装和运行
-
-1. 安装依赖：
-```bash
-go mod tidy
-```
-
-2. 配置数据库：
-- 创建MySQL数据库 `token_balance`
-- 执行自动迁移（启动时自动执行）
-
-3. 启动服务：
-```bash
-go run main.go
-```
-
-4. 或编译后运行：
-```bash
-go build -o token-balance-server
-./token-balance-server
-```
-
-## 部署说明
-
-### 1. 数据库部署
+创建MySQL数据库：
 ```sql
 CREATE DATABASE token_balance CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-### 2. 服务部署
-- 修改 `.env` 文件中的配置
-- 使用 `screen` 或 `systemd` 管理进程
+### 3. 配置环境变量
 
-### 3. 反向代理配置（Nginx示例）
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-    
-    location / {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
-}
-```
-
-## 监控和日志
-
-### 日志文件
-- `logs/access.log` - 访问日志
-- `logs/app.log` - 应用日志
-
-### 监控指标
-- 事件监听状态
-- 积分计算任务状态
-- 数据库连接状态
-- API响应时间
-
-## 故障恢复
-
-### 事件监听中断
-如果事件监听中断，可以手动同步：
+复制 `.env.example` 到 `.env` 并修改配置：
 ```bash
-curl -X POST http://localhost:8080/api/v1/events/sync \
-  -d "from_block=1000&to_block=2000"
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=token_balance
 ```
 
-### 积分计算中断
-如果积分计算中断，可以回溯计算：
+### 4. 安装依赖
+
 ```bash
-curl -X POST http://localhost:8080/api/v1/points/calculate \
-  -d "from_date=2024-01-01&to_date=2024-01-02"
+go mod download
 ```
 
-## 操作记录
+### 5. 运行应用
 
-### 2024-01-XX 项目创建
-- ✅ 创建基础项目结构
-- ✅ 实现数据库模型
-- ✅ 开发事件监听服务
-- ✅ 实现积分计算逻辑
-- ✅ 创建RESTful API
-- ✅ 添加多链支持
-- ✅ 实现统计和报表功能
+```bash
+# 开发模式
+go run cmd/api/main.go
 
-### 后续计划
-- [ ] 添加缓存机制
-- [ ] 实现WebSocket实时推送
-- [ ] 添加更多监控指标
-- [ ] 性能优化
+# 或者构建后运行
+go build -o token-balance-server cmd/api/main.go
+./token-balance-server
+```
+
+### 6. 访问Swagger文档
+
+启动服务后访问：http://localhost:8080/swagger/index.html
+
+## API接口
+
+### 健康检查
+- `GET /health` - 服务状态检查
+
+### 用户管理
+- `GET /api/v1/users/:address` - 获取用户余额
+- `GET /api/v1/users/:address/history` - 获取用户余额历史
+- `GET /api/v1/users/:address/points` - 获取用户积分记录
+
+### 事件管理
+- `GET /api/v1/events` - 获取最近事件
+- `POST /api/v1/events/sync` - 手动同步事件
+
+### 积分管理
+- `GET /api/v1/points/leaderboard` - 获取积分排行榜
+- `POST /api/v1/points/calculate` - 手动计算积分
+
+### 统计信息
+- `GET /api/v1/stats/overview` - 获取系统概览
+- `GET /api/v1/stats/daily` - 获取每日统计
+
+## 数据库表结构
+
+### users 用户表
+- `id`: 用户地址（主键）
+- `balance`: 当前余额
+- `total_points`: 总积分
+- `created_at`: 创建时间
+- `updated_at`: 更新时间
+- `deleted_at`: 删除时间
+
+### user_balance_history 余额变动历史
+- `id`: 自增主键
+- `user_address`: 用户地址
+- `old_balance`: 变动前余额
+- `new_balance`: 变动后余额
+- `change_amount`: 变动数量
+- `change_type`: 变动类型
+- `tx_hash`: 交易哈希
+- `block_number`: 区块号
+- `timestamp`: 时间戳
+
+### points_records 积分记录
+- `id`: 自增主键
+- `user_address`: 用户地址
+- `points`: 获得积分
+- `balance`: 当时余额
+- `hours`: 持有时间
+- `rate`: 积分费率
+- `calculate_date`: 计算日期
+
+### event_logs 事件日志
+- `id`: 自增主键
+- `event_name`: 事件名称
+- `user_address`: 用户地址
+- `amount`: 数量
+- `tx_hash`: 交易哈希
+- `block_number`: 区块号
+- `timestamp`: 时间戳
+
+### user_daily_summary 每日汇总
+- `id`: 自增主键
+- `user_address`: 用户地址
+- `summary_date`: 汇总日期
+- `opening_balance`: 开盘余额
+- `closing_balance`: 收盘余额
+- `volume_minted`: 铸造总量
+- `volume_burned`: 销毁总量
+- `transfer_in`: 转入总量
+- `transfer_out`: 转出总量
+- `points_earned`: 获得积分
+- `average_balance`: 平均余额
+- `hours_held`: 持有时间
+
+### system_stats 系统统计
+- `id`: 自增主键
+- `total_users`: 总用户数
+- `total_supply`: 总供应量
+- `total_points`: 总积分
+- `active_users_24h`: 24小时活跃用户
+- `transactions_24h`: 24小时交易数
+- `total_transactions`: 总交易数
+- `statistics_date`: 统计日期
+
+## 功能特性
+
+- ✅ **RESTful API**: 标准的REST接口设计
+- ✅ **Swagger文档**: 自动生成的API文档
+- ✅ **数据库迁移**: 自动创建和更新表结构
+- ✅ **事件监听**: 实时监听区块链事件
+- ✅ **积分计算**: 定时计算用户积分
+- ✅ **多链支持**: 支持多个以太坊网络
+- ✅ **日志记录**: 完整的日志系统
+- ✅ **错误处理**: 统一的错误处理机制
+
+## 开发指南
+
+### 添加新的API端点
+
+1. 在对应的控制器中添加方法
+2. 添加Swagger注释
+3. 在路由中注册路由
+4. 重新生成Swagger文档
+
+### 数据库迁移
+
+使用GORM的AutoMigrate功能自动处理：
+```go
+err := db.AutoMigrate(&YourModel{})
+```
+
+### 事件监听
+
+服务会自动监听以下事件：
+- Transfer: 代币转账
+- Mint: 代币铸造
+- Burn: 代币销毁
+
+## 部署
+
+### Docker部署
+
+```dockerfile
+FROM golang:1.21-alpine AS builder
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN go build -o main cmd/api/main.go
+
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=builder /app/main .
+CMD ["./main"]
+```
+
+### 生产环境配置
+
+- 设置 `SERVER_MODE=release`
+- 配置生产数据库连接
+- 启用HTTPS
+- 配置反向代理
+
+## 故障排除
+
+### 常见问题
+
+1. **数据库连接失败**
+   - 检查MySQL服务状态
+   - 验证连接参数
+   - 确保数据库已创建
+
+2. **事件监听失败**
+   - 检查以太坊节点连接
+   - 验证合约地址
+   - 确认RPC端点可访问
+
+3. **积分计算错误**
+   - 检查用户余额数据
+   - 验证计算逻辑
+   - 查看定时任务日志
+
+## 许可证
+
+MIT License

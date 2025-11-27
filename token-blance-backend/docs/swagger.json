@@ -1,0 +1,579 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "TokenBalanceX区块链代币余额追踪和积分计算系统API",
+        "title": "TokenBalanceX API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/api/v1/events": {
+            "get": {
+                "description": "获取最近的区块链事件记录",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "summary": "获取最近事件",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "每页数量",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.PaginatedData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/events/sync": {
+            "post": {
+                "description": "手动触发区块链事件同步",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "summary": "同步区块链事件",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SwaggerResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/points/calculate": {
+            "post": {
+                "description": "手动触发积分计算任务",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Points"
+                ],
+                "summary": "计算积分",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "2024-01-01",
+                        "description": "开始日期",
+                        "name": "fromDate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "2024-01-31",
+                        "description": "结束日期",
+                        "name": "toDate",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SwaggerResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/points/leaderboard": {
+            "get": {
+                "description": "获取积分排行榜，显示积分最高的用户",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Points"
+                ],
+                "summary": "获取积分排行榜",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 50,
+                        "description": "返回数量限制",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.LeaderboardEntry"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stats/daily": {
+            "get": {
+                "description": "获取指定天数的每日统计数据",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stats"
+                ],
+                "summary": "获取每日统计",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 30,
+                        "description": "天数",
+                        "name": "days",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.DailyStats"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/stats/overview": {
+            "get": {
+                "description": "获取系统的总体统计数据",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Stats"
+                ],
+                "summary": "获取系统概览",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/services.StatsOverview"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{address}": {
+            "get": {
+                "description": "根据用户地址获取当前余额和总积分",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "获取用户余额",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户地址",
+                        "name": "address",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{address}/history": {
+            "get": {
+                "description": "获取指定用户的余额变动记录",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "获取用户余额历史",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户地址",
+                        "name": "address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "每页数量",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.PaginatedData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{address}/points": {
+            "get": {
+                "description": "获取指定用户的积分记录",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "获取用户积分",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户地址",
+                        "name": "address",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.PointsRecord"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.DailyStats": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "new_users": {
+                    "type": "integer"
+                },
+                "points_calculated": {
+                    "type": "number"
+                },
+                "transactions": {
+                    "type": "integer"
+                },
+                "volume": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.LeaderboardEntry": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "balance": {
+                    "type": "string"
+                },
+                "rank": {
+                    "type": "integer"
+                },
+                "total_points": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.PaginatedData": {
+            "type": "object",
+            "properties": {
+                "items": {},
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "total_pages": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.PointsRecord": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "string"
+                },
+                "calculate_date": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "hours": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "points": {
+                    "type": "number"
+                },
+                "rate": {
+                    "type": "number"
+                },
+                "user": {
+                    "description": "关联",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    ]
+                },
+                "user_address": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.SwaggerResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "balance": {
+                    "type": "string"
+                },
+                "balance_history": {
+                    "description": "关联",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.UserBalanceHistory"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "daily_summaries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.UserDailySummary"
+                    }
+                },
+                "points_records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PointsRecord"
+                    }
+                },
+                "total_points": {
+                    "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserBalanceHistory": {
+            "type": "object",
+            "properties": {
+                "block_number": {
+                    "type": "integer"
+                },
+                "change_amount": {
+                    "type": "string"
+                },
+                "change_type": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "new_balance": {
+                    "type": "string"
+                },
+                "old_balance": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "tx_hash": {
+                    "type": "string"
+                },
+                "user": {
+                    "description": "关联",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    ]
+                },
+                "user_address": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserDailySummary": {
+            "type": "object",
+            "properties": {
+                "average_balance": {
+                    "type": "string"
+                },
+                "closing_balance": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "hours_held": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "opening_balance": {
+                    "type": "string"
+                },
+                "points_earned": {
+                    "type": "number"
+                },
+                "summary_date": {
+                    "type": "string"
+                },
+                "transfer_in": {
+                    "type": "string"
+                },
+                "transfer_out": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "description": "关联",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    ]
+                },
+                "user_address": {
+                    "type": "string"
+                },
+                "volume_burned": {
+                    "type": "string"
+                },
+                "volume_minted": {
+                    "type": "string"
+                }
+            }
+        },
+        "services.StatsOverview": {
+            "type": "object",
+            "properties": {
+                "active_users_24h": {
+                    "type": "integer"
+                },
+                "total_points": {
+                    "type": "number"
+                },
+                "total_supply": {
+                    "type": "string"
+                },
+                "total_transactions": {
+                    "type": "integer"
+                },
+                "total_users": {
+                    "type": "integer"
+                },
+                "transactions_24h": {
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "description": "Bearer token for authentication",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
