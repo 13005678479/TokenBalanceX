@@ -30,3 +30,67 @@ else
     echo "❌ 构建失败！"
     exit 1
 fi
+
+# Go项目通用忽略规则
+
+# 依赖包目录
+vendor/
+
+# 编译产物
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# 输出目录
+bin/
+build/
+
+# 日志文件
+logs/
+*.log
+
+# 环境变量文件
+# .env
+# .env.local
+# .env.*.local
+
+# IDE和编辑器文件
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 测试覆盖率文件
+coverage.out
+coverage.html
+
+# Go工具生成的文件
+go.work
+go.work.sum
+
+# 临时文件
+tmp/
+temp/
+
+# Docker相关
+.docker/
+*.dockerfile
+
+# 数据库文件
+*.db
+*.sql
+*.sqlite
+
+# 操作系统文件
+Thumbs.db
+.DS_Store
+
+# 其他不需要提交的文件
+*.pem
+*.key
+*.p12
