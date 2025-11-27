@@ -1,0 +1,12 @@
+{
+  "network": "sepolia",
+  "chainId": "11155111",
+  "contractAddress": "0x37FDD2705d67D6f5B99466B260d7ab26f48a8a8C",
+  "deploymentBlock": 9717240,
+  "deployer": "0xF53A1D8E70560146C460150D7B3c6AC88218cB0E",
+  "tokenName": "TokenBalance",
+  "tokenSymbol": "TBK",
+  "maxSupply": "1000000000.0",
+  "deployedAt": "2025-11-27T10:49:27.512Z",
+  "transactionHash": "0xaa8907bc369ffb9c7b17bae77a14665785090156e610d1c3d9613781def3ad28"
+}
