@@ -1,0 +1,76 @@
+# 编译文件和构建输出
+# Backend (Go)
+/token-blance-backend/token-blance-backend
+/token-blance-backend/*.exe
+/token-blance-backend/*.dll
+/token-blance-backend/*.so
+/token-blance-backend/*.dylib
+/token-blance-backend/main
+
+# Frontend (Next.js)
+/token-blance-front/.next/
+/token-blance-front/out/
+/token-blance-front/build/
+/token-blance-front/dist/
+/token-blance-front/.vercel/
+/token-blance-front/.nuxt/
+/token-blance-front/.cache/
+/token-blance-front/.output/
+
+# Contract (Hardhat)
+/token-blance-contract/artifacts/
+/token-blance-contract/cache/
+/token-blance-contract/typechain-types/
+/token-blance-contract/coverage/
+/token-blance-contract/openzeppelin-upgrades/
+
+# 依赖锁定文件（可选，通常建议提交）
+# package-lock.json
+# go.sum
+# yarn.lock
+
+# IDE 和编辑器文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 日志文件
+*.log
+logs/
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+*.temp
+
+# 测试覆盖率报告
+coverage/
+*.lcov
+
+# 备份文件
+*.bak
+*.backup
+
+# 注意：不忽略 .env 文件，因为用户要求提交 env 文件
+# 如果需要忽略特定的 env 文件，可以单独添加：
+# .env.local
+# .env.development.local
+# .env.test.local
+# .env.production.local
+
+# 但是包含这些 env 文件（根据用户要求）
+!.env
+!.env.*
+!/token-blance-backend/.env
+!/token-blance-contract/constant.env
+!/token-blance-front/.env.local
