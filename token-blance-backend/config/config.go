@@ -38,6 +38,64 @@ type EthereumConfig struct {
 	ContractAddress string
 	PrivateKey      string
 	SepoliaRPCURL   string
+	// 🔗 多链支持配置
+	BaseSepoliaRPCURL string
+}
+
+// ChainConfig 链配置
+//
+// 任务7: ❌ 需要支持多链逻辑，比如支持sepolia， base sepolia
+//
+// 当前状态：
+// ❌ 仅支持Sepolia单链 (已完成架构设计，未完全实现)
+// ✅ 配置结构设计完成
+// ✅ 环境变量支持
+// ❌ 多链事件监听 (待实现)
+// ❌ 链切换逻辑 (待实现)
+//
+// 支持的链配置：
+// - ✅ Sepolia (ChainID: 11155111) - 以太坊测试网
+// - ⚠️ Base Sepolia (ChainID: 84532) - Base测试网 (架构完成，未激活)
+//
+// 使用方式：
+// 1. 在.env中配置对应RPC地址
+// 2. 调用GetSupportedChains()获取配置
+// 3. 为每个链创建独立的事件监听器
+type ChainConfig struct {
+	Name         string `json:"name"`         // 链名称 ("Sepolia", "Base Sepolia")
+	RPCURL       string `json:"rpc_url"`      // RPC端点地址
+	ChainID      int64  `json:"chain_id"`     // 链ID (用于网络识别)
+	ContractAddr  string `json:"contract_address"` // 代币合约地址 (每链可以不同)
+	Enabled      bool   `json:"enabled"`      // 是否启用该链
+}
+
+// GetSupportedChains 获取支持的链配置
+func (c *Config) GetSupportedChains() map[string]ChainConfig {
+	chains := make(map[string]ChainConfig)
+	
+	// Sepolia 测试网
+	if c.Ethereum.SepoliaRPCURL != "" {
+		chains["sepolia"] = ChainConfig{
+			Name:         "Sepolia",
+			RPCURL:       c.Ethereum.SepoliaRPCURL,
+			ChainID:      11155111,
+			ContractAddr:  c.Ethereum.ContractAddress,
+			Enabled:      true,
+		}
+	}
+	
+	// Base Sepolia 测试网
+	if c.Ethereum.BaseSepoliaRPCURL != "" {
+		chains["base-sepolia"] = ChainConfig{
+			Name:         "Base Sepolia",
+			RPCURL:       c.Ethereum.BaseSepoliaRPCURL,
+			ChainID:      84532,
+			ContractAddr:  c.Ethereum.ContractAddress,
+			Enabled:      true,
+		}
+	}
+	
+	return chains
 }
 
 // JWTConfig JWT配置
@@ -64,11 +122,12 @@ func LoadConfig() *Config {
 			DBName:   getEnv("DB_NAME", "token_balance"),
 		},
 		Ethereum: EthereumConfig{
-			RPCEndpoint:     getEnv("ETHEREUM_RPC", "http://localhost:8545"),
-			ChainID:         getEnvInt64("ETHEREUM_CHAIN_ID", 31337),
-			ContractAddress: getEnv("TOKEN_CONTRACT_ADDRESS", ""),
-			PrivateKey:      getEnv("PRIVATE_KEY", ""),
-			SepoliaRPCURL:   getEnv("SEPOLIA_RPC_URL", "https://sepolia.infura.io/v3/"),
+			RPCEndpoint:      getEnv("ETHEREUM_RPC", "http://localhost:8545"),
+			ChainID:          getEnvInt64("ETHEREUM_CHAIN_ID", 31337),
+			ContractAddress:  getEnv("TOKEN_CONTRACT_ADDRESS", ""),
+			PrivateKey:       getEnv("PRIVATE_KEY", ""),
+			SepoliaRPCURL:    getEnv("SEPOLIA_RPC_URL", "https://sepolia.infura.io/v3/"),
+			BaseSepoliaRPCURL: getEnv("BASE_SEPOLIA_RPC_URL", ""),
 		},
 		JWT: JWTConfig{
 			Secret: getEnv("JWT_SECRET", "token-balance-secret-key"),

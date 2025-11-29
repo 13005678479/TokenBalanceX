@@ -15,6 +15,7 @@ func SetupRouter(
 	eventController *controllers.EventController,
 	pointsController *controllers.PointsController,
 	statsController *controllers.StatsController,
+	multiChainController *controllers.MultiChainController,
 ) *gin.Engine {
 	r := gin.New()
 
@@ -78,6 +79,15 @@ func SetupRouter(
 		{
 			stats.GET("/system", statsController.GetSystemStats)
 			stats.GET("/daily", statsController.GetDailyStats)
+		}
+
+		// 多链相关路由 (任务7: 完善多链支持)
+		multiChain := v1.Group("/multichain")
+		{
+			multiChain.GET("/status", multiChainController.GetChainStatus)
+			multiChain.POST("/start/:chain", multiChainController.StartChain)
+			multiChain.POST("/stop/:chain", multiChainController.StopChain)
+			multiChain.GET("/events/:chain", multiChainController.GetChainEvents)
 		}
 	}
 

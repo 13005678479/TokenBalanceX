@@ -7,6 +7,21 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 /**
  * @title TokenBalance
  * @dev ERC20代币合约，支持minting和burning功能
+ * 
+ * 任务1: ✅ 部署一个带mint和burn功能的erc20合约，铸造销毁几个token，转移几个token，来构造事件
+ * 
+ * 功能实现：
+ * - ✅ mint(): 铸造代币功能 (仅合约所有者)
+ * - ✅ burn(): 销毁代币功能 (任何用户)
+ * - ✅ transfer(): 标准ERC20转账 + 自定义事件
+ * - ✅ transferFrom(): 授权转账 + 自定义事件
+ * - ✅ batchMint(): 批量铸造功能
+ * 
+ * 自定义事件：
+ * - TokensMinted(to, amount, timestamp)
+ * - TokensBurned(from, amount, timestamp)  
+ * - TokensTransferred(from, to, amount, timestamp)
+ * 
  * 用于追踪用户余额和计算积分
  */
 contract TokenBalance is ERC20, Ownable {

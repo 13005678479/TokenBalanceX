@@ -1,15 +1,9 @@
 package controllers
 
 import (
-	"math/big"
 	"net/http"
-	"time"
-	"token-balance/internal/middleware"
-	"token-balance/internal/models"
 	"token-balance/internal/services"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/gin-gonic/gin"
 )
 
@@ -87,51 +81,4 @@ func (ec *EventController) GetEventByID(c *gin.Context) {
 		"success": false,
 		"message": "此端点暂未实现",
 	})
-}
-
-// saveEventLog 保存事件日志到数据库
-func (es *EventService) saveEventLog(log *types.Log) {
-	// 创建事件日志对象
-	eventLog := models.EventLog{
-		TxHash:      log.TxHash.Hex(),
-		BlockNumber: log.BlockNumber,
-		Data:        common.Bytes2Hex(log.Data),
-		Timestamp:   time.Now(),
-		Amount:      "0",       // 默认值
-		EventName:   "Unknown", // 默认值
-	}
-
-	// 识别事件类型和用户地址
-	if len(log.Topics) > 0 {
-		// Transfer 事件签名: keccak256("Transfer(address,address,uint256)")
-		transferEventSig := common.HexToHash("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef")
-
-		if log.Topics[0] == transferEventSig {
-			eventLog.EventName = "Transfer"
-			// Topics[1] = from (address), Topics[2] = to (address)
-			if len(log.Topics) > 2 {
-				// 记录接收方地址作为用户地址
-				eventLog.UserAddress = common.BytesToAddress(log.Topics[2][:]).Hex()
-			}
-
-			// 从Data部分解析金额（uint256）
-			if len(log.Data) >= 32 {
-				amount := new(big.Int).SetBytes(log.Data[:32])
-				eventLog.Amount = amount.String()
-			}
-		}
-	}
-
-	// 确保必需字段都有值
-	if eventLog.UserAddress == "" {
-		eventLog.UserAddress = "0x0000000000000000000000000000000000000000" // 默认地址
-	}
-
-	// 保存到数据库
-	if err := es.db.Create(&eventLog).Error; err != nil {
-		middleware.Error("保存事件日志失败: %v", err)
-		return
-	}
-
-	middleware.Info("事件已保存到数据库: %s, TX=%s, 金额=%s", eventLog.EventName, eventLog.TxHash, eventLog.Amount)
 }

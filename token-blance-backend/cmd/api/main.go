@@ -57,21 +57,32 @@ func main() {
 	}
 	pointsService := services.NewPointsService(db)
 	statsService := services.NewStatsService(db)
+	
+	// 初始化多链服务 (任务7: 完善多链支持)
+	multiChainService := services.NewMultiChainService(db, cfg)
 
 	// 初始化控制器
 	userController := controllers.NewUserController(userService)
 	eventController := controllers.NewEventController(eventService)
 	pointsController := controllers.NewPointsController(pointsService)
 	statsController := controllers.NewStatsController(statsService)
+	multiChainController := controllers.NewMultiChainController(multiChainService)
 
 	// 启动后台服务
 	if eventService != nil {
 		go eventService.StartEventListener()
 	}
 	go pointsService.StartPointsCalculation()
+	
+	// 启动多链监听服务
+	go func() {
+		if err := multiChainService.StartAllChains(); err != nil {
+			middleware.Error("启动多链服务失败: %v", err)
+		}
+	}()
 
 	// 设置路由
-	router := router.SetupRouter(userController, eventController, pointsController, statsController)
+	router := router.SetupRouter(userController, eventController, pointsController, statsController, multiChainController)
 
 	// 启动服务器
 	middleware.Info("服务器启动在端口: %s", cfg.Server.Port)
